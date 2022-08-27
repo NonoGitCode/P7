@@ -3,10 +3,10 @@
         <a href="#">
             <img src="..\assets\icon-left-font-monochrome-white.png"  class="logo"/>
         </a>
-        <div>
+        <nav>
             <router-link to="/login" class="link">Login</router-link>
             <router-link to="/signup" class="link">Inscription</router-link>
-        </div>
+        </nav>
     </div>
 </template>
 

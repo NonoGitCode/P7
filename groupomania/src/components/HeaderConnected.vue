@@ -3,13 +3,25 @@
         <a href="#">
             <img src="..\assets\icon-left-font-monochrome-white.png"  class="logo"/>
         </a>
-        <div>
+        <nav>
             <router-link to="/" class="link">Home</router-link>
             <router-link to ="/create" class="link">Créer un post</router-link>
-            <router-link to ="/login" class="link">Déconnexion </router-link>
-        </div>
+            <router-link to ="/login" class="link" @click="logout">Déconnexion </router-link>
+        </nav>
     </div>
 </template>
+<script>
+
+
+export default ({
+    methods:{
+        logout(){
+            this.$store.commit('logout');
+            this.$router.push("/login")
+        }, 
+    }
+})
+</script>
 
 
 <style>

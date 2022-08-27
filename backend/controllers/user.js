@@ -35,6 +35,7 @@ exports.login = (req, res, next) => {
                     }/* mdp valide */
                     res.status(200).json({
                         userId: user._id,
+                        pseudo: user.pseudo,
                         token: jwt.sign(
                             { userId: user._id , level: user.level, pseudo: user.pseudo},
                             security.secretToken,

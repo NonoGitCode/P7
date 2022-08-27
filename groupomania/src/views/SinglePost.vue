@@ -3,10 +3,11 @@
 </template>
 
 <script>
+
 import HeaderConnected from "../components/HeaderConnected.vue"
 
 export default {
-    name: "DeletePost",
+    name: "LikePost",
     data() {
         return {
         };

@@ -1,46 +1,30 @@
 <template>
     <div class="body">
-        <div class="posts">
-            <a href="#" class="postLink">
-                <p class="pseudo">Jean2larue</p>
-                    <img src="..\assets\test2jpg.jpg" class="ImgPost"/>
-                <p class="description">Ceci est une description blah blah blah blah
-                </p>
-                <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
-                <a class="NumberLikes">0</a>
-                <!-- <font-awesome-icon icon="fa-regular fa-thumbs-up" /> -->
-            </a>
-        </div>
-        <div class="posts">
-            <a href="#" class="postLink">
-                <p class="pseudo">Nono22</p>
-                <img src="..\assets\test.jpg" class="ImgPost"/>
-                <p class="description">Ceci est une description blah blah blah blah sdfhgsdfhnfghngnfngfgnfs gfbdhnrsnb df shrseth gfhdhbkjjsroib ferghkgjbhnoiugbh rgedoikjgjhodslikjgb dfkljgjhsolikfdjgh fdsmolgjflskijhb dfmlkihglfskbj dfmlkgjdflikhbgjb dmflslkhbdflgkbh 
-                </p>
-                <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
-                <a class="NumberLikes">0</a>
-            </a>
-        </div>
-        <div class="posts">
-            <a href="#" class="postLink">
-                <p class="pseudo">FranckCompta</p>
-                <img src="#"/>
-                <p class="description">Ceci est une description blah blah blah blah
-                </p>
-                <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
-                <a class="NumberLikes">0</a>
-            </a>
-        </div>
+        <router-link :to="{name: 'post' /*, params : {id : post.id}*/}" >
+            <div class="posts" >
+                    <p class="pseudo"> Pseudo </p>
+                        <img src= "#"  class="ImgPost"/>
+                    <p class="description"> ceci est une Description 
+                    </p>
+                    <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
+                    <a class="NumberLikes"> NumberOfLikes </a>
+                    <!-- <font-awesome-icon icon="fa-regular fa-thumbs-up" /> -->
+            </div>
+        </router-link>
     </div>
 </template>
 
 <script>
 
 export default {
-    Data(){
+    name: 'post',
+    props: ['id'],
+    data(){
         return {
             Pseudo:'',
             Description:'',
+            imgUrl: '',
+            NumberOfLikes: 0,
         }
     }
 }
@@ -48,7 +32,7 @@ export default {
 
 <style>
 .posts{
-    border: solid black 2px;
+    box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.2);
     margin: 30px auto;
     max-width: 500px;
     border-radius: 25px;
@@ -58,6 +42,9 @@ export default {
     flex-direction: column;
     text-align: justify;
     text-justify: inter-word;
+}
+.posts:hover{
+    box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.4)
 }
 .postLink{
     color: #000000;
