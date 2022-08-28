@@ -13,5 +13,4 @@ library.add(faThumbsUp)
 createApp(App).use(store)
     .component('fa', FontAwesomeIcon)
     .use(router)
-    .use(store)
     .mount('#app');

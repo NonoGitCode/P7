@@ -1,7 +1,7 @@
 <template>
     <div class="create">
         <HeaderConnected />
-        <h1>Créer un nouveau post</h1>
+        <h1>Modifier un post</h1>
         <div class="container">
             <p class="textDownload"> Télécharger une image</p>
             <input type="file" class="fileSubmit" ref="myFiles" @change="previewFiles" accept="image/png, image/jpeg, image/jpg">
@@ -13,17 +13,13 @@
 </template>
 
 <script>
-
 import HeaderConnected from "../components/HeaderConnected.vue"
-
+import { mapState } from "vuex"
 
 export default {
-    name: "CreatePost",
+    name: "EditPost",
     data() {
         return {
-            description:"",
-            myFiles: null
-
         };
     },
     components: {HeaderConnected},
@@ -34,39 +30,13 @@ export default {
         }
     },
     computed:{
-        validatedFields() {
-            if (this.description != ""){
-                return true;
-            } else {
-                return false
-            }
-        },
+        ...mapState({
+            user: 'userInfos',
+        }),
     },
-    methods:{
-        previewFiles(){
-            this.files = this.$refs.myFiles.files[0];
-            const fileName = this.files.name
-        },
-        poster(){
-           const self = this;
-           console.log(this.files.name)
-           console.log(this.description)
-           this.$store.dispatch('poster',{
-            imageUrl: this.files.name,
-            description: this.description
-           }).then((response) =>{
-                self.$router.push("/")
-                console.log(response)
-           }).catch((error)=>{
-                console.log(error);
-           })
-        }
-    }
 }   
 
 </script>
 <style scoped>
-textarea{
-    height: 120px;
-}
+
 </style>

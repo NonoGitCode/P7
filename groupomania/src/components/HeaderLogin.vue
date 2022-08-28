@@ -4,8 +4,8 @@
             <img src="..\assets\icon-left-font-monochrome-white.png"  class="logo"/>
         </a>
         <nav>
-            <router-link to="/login" class="link">Login</router-link>
-            <router-link to="/signup" class="link">Inscription</router-link>
+            <router-link to="/login" class="linkHeader">Login</router-link>
+            <router-link to="/signup" class="linkHeader">Inscription</router-link>
         </nav>
     </div>
 </template>
@@ -22,13 +22,13 @@
 .logo{
     width: 300px;
 }
-.link{
+.linkHeader{
     text-decoration: none;
     color: #ffffff;
     margin:15px;
     font-size: 1.2rem;  
 }
-.link:hover{
+.linkHeader:hover{
     text-decoration: underline;
 }
 </style>

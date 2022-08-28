@@ -4,9 +4,9 @@
             <img src="..\assets\icon-left-font-monochrome-white.png"  class="logo"/>
         </a>
         <nav>
-            <router-link to="/" class="link">Home</router-link>
-            <router-link to ="/create" class="link">Créer un post</router-link>
-            <router-link to ="/login" class="link" @click="logout">Déconnexion </router-link>
+            <router-link to="/" class="linkHeader">Home</router-link>
+            <router-link to ="/create" class="linkHeader">Créer un post</router-link>
+            <router-link to ="/login" class="linkHeader" @click="logout">Déconnexion </router-link>
         </nav>
     </div>
 </template>
@@ -32,18 +32,14 @@ export default ({
     justify-content: space-between;
     padding: 15px;
 }
-.logo{
-    width: 300px;
-    max-height: 110px;
-    object-fit: cover;
-}
-.link{
+
+.linkHeader{
     text-decoration: none;
     color: #ffffff;
     margin:15px;
     font-size: 1.2rem;  
 }
-.link:hover{
+.linkHeader:hover{
     text-decoration: underline;
 }
 </style>

@@ -10,6 +10,7 @@ if (!user){
   user = {
     userId: -1,
     token: '',
+    level: 0,
   };
 }else{
   try{
@@ -18,7 +19,8 @@ if (!user){
   } catch(ex){
     user = {
       userId: -1,
-      token:''
+      token:'',
+      level: 0
     };
   }
 };
@@ -27,6 +29,7 @@ export default createStore({
   state: {
     status:'',
     user:user,
+    isAdmin: null,
   },
   getters: {
   },
@@ -42,12 +45,13 @@ export default createStore({
     logout(state){
       state.user = {
         userId: -1,
-        token:''
+        token:'',
+        level: 0
       }
       localStorage.removeItem('user');
     },
-    poster(){
-      UrlApi.defaults.headers.common['Authorization'] = user.token ;
+    grantAdmin(state, value){
+      state.isAdmin = value
     }
 
   },
@@ -57,6 +61,7 @@ export default createStore({
         UrlApi.post("auth/signup", userInfos)
           .then(function(response){
             commit('setStatus', 'created');
+            commit('logUser', response.data)
             resolve(response);
           })
           .catch(function(error){
@@ -79,11 +84,10 @@ export default createStore({
           });
       })
     },
-    poster: ({commit}, userInfos) => {
+    poster: ({commit}, postInfo) => {
       commit;
       return new Promise((resolve, reject) => {
-        UrlApi.post("/post", userInfos)
-        console.log(user.token)
+        UrlApi.post("/post", postInfo)
         .then(function(response){
           resolve(response);
         })
@@ -91,6 +95,6 @@ export default createStore({
           reject(error);
         })
       })
-    }
+    },
   }
 })

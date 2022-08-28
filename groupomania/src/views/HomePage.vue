@@ -1,31 +1,43 @@
 <template>
-<div>
+<div class="home">
     <HeaderConnected/>
     <div class="body">
         <h1>Postes récents</h1>
-        <div :key="index" v-for="(myObj, index) in myObj">
-
-        </div>
-       <PostComponent />
+       <PostComponent :post="post" v-for="(post, index) in myObj" :key="index" />
     </div>
 </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import HeaderConnected from "../components/HeaderConnected.vue"
 import PostComponent from "../components/PostComponent.vue"
-import { mapState } from "vuex"
+
 
 export default {
     name:"Home",
     data(){
         return{
-            myObj:{
-
-                description: "",
-                likes: "",
-                imageUrl: "",
-            }
+            myObj: [
+                {
+                    description: "description2",
+                    imageUrl: "#",
+                    pseudo: "jean",
+                    numberOfLikes: 0
+                },
+                {
+                    description: "description3",
+                    imageUrl: "#",
+                    pseudo: "jean",
+                    numberOfLikes: 5
+                },
+                {
+                    description: "description4",
+                    imageUrl: "#",
+                    pseudo: "jean",
+                    numberOfLikes: 10
+                }
+            ]
         }
     },
     mounted(){
@@ -35,9 +47,7 @@ export default {
         }
     },
     computed:{
-        ...mapState({
-            user: 'userInfos',
-        }),
+        ...mapState(['status'])
     },
     components: { HeaderConnected, PostComponent },
 }
@@ -45,10 +55,4 @@ export default {
 
 <style scoped>
 
-.body{
-   background-color: rgb(231, 231, 231)
-}
-h1{
-    margin-bottom: -5px;
-}
 </style>

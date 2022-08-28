@@ -5,7 +5,7 @@ import Login from "../views/Login.vue";
 import Signup from "../views/Signup.vue";
 import Home from "../views/HomePage.vue";
 import CreatePost from "../views/CreatePost.vue"
-import DeletePost from "../views/DeletePost.vue"
+import EditPost from "../views/EditPost.vue"
 import SinglePost from "../views/SinglePost.vue"
 import NotFound from "../views/NotFound.vue"
 
@@ -45,9 +45,9 @@ const routes = [
     }
   },
   {
-    path: '/delete',
-    name: 'delete',
-    component: DeletePost,
+    path: '/edit',
+    name: 'editPost',
+    component: EditPost,
     meta:{
       title: 'Modifier un post'
     }
@@ -75,7 +75,8 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 })
-router.afterEach((to) =>{
-  document.title = to.meta.title
+router.beforeEach((to, from, next) =>{
+  document.title = to.meta.title;
+  next();
 })
 export default router

@@ -4,27 +4,27 @@
         <div class="body">
             <h1>Inscription</h1>
              <h3 v-if="status == 'error_create'" class="errorConnexion">Email déjà utilisé</h3>
-            <form  @submit.prevent="onSubmit" class="signup">
+            <div class="container">
                 <div class="pseudo">
                     <label for="pseudo">Pseudo</label>
-                    <input type="text" v-model="pseudo" id="pseudo"/>
-                    <br />
-                    <span class="error">Merci de saisir un pseudo valide</span> 
+                    <input type="text" v-model="pseudo" id="pseudo" @change="checkPseudo"/>
+                    <br >
+                    <p class="error" v-show="wrongPseudo">Merci de saisir un pseudo valide</p> 
                 </div>
                 <div class="email">
                     <label for="email">Email</label>
-                    <input type="email" v-model="email" id="email"/>
-                    <br />
-                    <span class="error">Merci de saisir un email valide</span> 
+                    <input type="email" v-model="email" id="email" @change="checkEmail"/>
+                    <br >
+                    <p class="error" v-show="wrongEmail">Merci de saisir un email valide</p> 
                 </div>
                 <div class="password">
                     <label for="password">Mot de passe</label>
-                    <input type="password" v-model="password" id="password"/>
-                    <br />
-                    <span class="error">Merci de saisir un mot de passe valide</span> 
+                    <input type="password" v-model="password" id="password" @change="checkPassword"/>
+                    <br >
+                    <p class="error" v-show="wrongPassword">Merci de saisir un mot de passe valide</p> 
                 </div>
-                <button @click="createAccount" class="button" :class="{'button--disabled' : !validatedFields}">Inscription</button>
-            </form>
+                <button @click.prevent="createAccount" class="btn" :class="{'button--disabled' : !validatedFields}">Inscription</button>
+            </div>
         </div>
     </div>
 </template>
@@ -32,21 +32,25 @@
 <script>
 import HeaderLogin from '../components/HeaderLogin.vue';
 import { mapState } from 'vuex'
-
+const passwordRegex = /^[A-Za-zâêîôûäëïöüÄËÏÖÜÂÊÎÔÛéèà\s]{3,50}$/;
+const mailRegex = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
 
 export default {
     name: "Signup",
     components: { HeaderLogin },
     data(){
         return {
-            pseudo:'',
-            email:'',
-            password:''
+            pseudo: "",
+            email: "",
+            password: "",
+            wrongPseudo: false,
+            wrongPassword: false,
+            wrongEmail: false,
         }
     },
     computed:{
         validatedFields() {
-            if (this.email != "" && this.password != "" && this.pseudo != ""){
+            if (this.email != "" && this.password != "" && this.pseudo != "" && this.wrongPseudo == false && this.wrongPassword == false && this.wrongEmail == false){
                 return true;
             } else {
                 return false
@@ -55,18 +59,41 @@ export default {
         ...mapState(['status'])
     },
     methods:{
-        createAccount(){
-            const self = this;
-            this.$store.dispatch('createAccount', {
-            pseudo: this.pseudo,
-            email: this.email,
-            password: this.password
-            }).then((response) => {
-                self.$router.push('/login')
-                console.log(response)
-            }).catch((error) => {
-                console.log(error);
-            })
+        async createAccount(){
+            if (this.email != "" && this.password != "" && this.pseudo != "" && this.wrongPseudo == false && this.wrongPassword == false && this.wrongEmail == false){
+                const self = this;
+                await this.$store.dispatch('createAccount', {
+                pseudo: this.pseudo,
+                email: this.email,
+                password: this.password
+                }).then((response) => {
+                    self.$router.push('/')
+                    console.log(response)
+                }).catch((error) => {
+                    console.log(error);
+                })
+            }
+        },
+        checkEmail (){
+            if(mailRegex.test(this.email)){
+                this.wrongEmail = false;
+            } else {
+                this.wrongEmail = true;
+            }
+        },
+        checkPassword (){
+            if(passwordRegex.test(this.password)){
+                this.wrongPassword = false;
+            } else {
+                this.wrongPassword = true;
+            }
+        },
+        checkPseudo (){
+            if(passwordRegex.test(this.pseudo)){
+                this.wrongPseudo = false;
+            } else {
+                this.wrongPseudo = true
+            }
         }
     },
     mounted() {
@@ -74,59 +101,11 @@ export default {
             this.$router.push('/')
             return;
         }
+        
     },
 }
 </script>
 <style>
-    .signup{
-        /* border: 1px solid black; */
-        box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.2);
-        margin: auto;
-        margin-top: 50px;
-        max-width: 300px;
-        height: 240px;
-        border-radius: 15px;
-        padding: 15px;
-        margin-bottom: 200px;
-        background-color: #FFD7D7;
-        display: flex;
-        flex-direction: column;
-    }
-    .signup:hover{
-       box-shadow: 0px 0px 15px -3px rgba(0,0,0,0.4) 
-    }
-    .button{
-        background-color: #f86143;
-        margin-top: 20px;
-        margin: auto;
-        width: 150px;
-        border: none;
-        border-radius: 10px;
-        padding: 5px;
-    }
-    .button:hover{
-        background-color: rgb(255, 42, 0);
-        cursor: pointer;
-    }
-    .email{
-        margin-bottom: 10px;
-        margin-top: 0px;
-    }
-    .button--disabled { 
-        background-color: #cccccc; 
-        color: #666666; 
-        cursor: no-drop;
-    }
-    .button--disabled:hover{
-        color: #505050;
-        background-color: #cccccc;
-        cursor: no-drop;
-    }
-    input{
-        border: none;
-        margin-top: 3px;
-        border-radius: 5px;
-    }
 
 </style>
 
