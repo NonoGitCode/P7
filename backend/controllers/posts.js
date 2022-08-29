@@ -1,20 +1,22 @@
 const Post = require('../models/Post');
 const fs = require('fs');
+const { Console } = require('console');
 
 
 //Fonction create Post qui va récuperer les informations dans le body de la requête selon le schema, elle va y ajouter l'URL de l'image généré ainsi que l'initialisation des likes et dislike
 exports.createPost = (req, res, next) => {
+    console.log(req.file)
     const PostObject = JSON.parse(req.body.Post);
-    delete PostObject._id;
-    const Post = new Post({
+    const postObj = new Post({
         ...PostObject,
         userId: req.auth.userId,
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
         likes: 0,
         createTime: Date.now(),
         updateTime: Date.now(),
+        usersLiked: [],
     });
-    Post.save()
+    postObj.save()
         .then(() => { res.status(201).json({message: 'Post enregistrée !'})})
         .catch(error => { res.status(400).json( { error })})
 };

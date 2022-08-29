@@ -9,7 +9,7 @@ const postSchema = mongoose.Schema({
   pseudo: { type: String, required: true},
   userId: { type: String, required: true },
   likes: { type: Number, required: true },
-  usersLiked: { type: [String] },
+  usersLiked: { type: [String], required: true },
   createTime: {type: Number, required: true},
   updateTime: {type: Number, required: true}
 });

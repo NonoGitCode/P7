@@ -40,6 +40,9 @@ export default createStore({
     postPhotoFileURL: null,
     currentPost:null,
     postCoverPhoto: null,
+    postLoaded: null,
+    PostInfo: null,
+    currentId:null
   },
   getters: {
   },
@@ -78,12 +81,21 @@ export default createStore({
     importAllPosts(state, payload){
       state.allPosts = payload
     },
-    // importOnePost(state, payload){
-    //   state.currentPost = payload
-    // },
-    // resetCurrentPost(state){
-    //   state.currentPost = null
-    // }
+    importOnePost(state, payload){
+      state.currentPost = payload
+    },
+    resetCurrentPost(state){
+      state.currentPost = null
+    },
+    statutPostLoader  (state, payload){
+      state.postLoaded = payload
+    },
+    fileInfo(state, payload){
+      state.PostInfo = payload
+    },
+    setCurrentId(state, payload){
+      state.currentId = payload
+    }
   },
   actions: {
     createAccount: ({commit}, userInfos) => {
@@ -115,10 +127,9 @@ export default createStore({
       });
     },
     createPost: ({commit}, postInfo) => {
-      console.log(postInfo)
       commit;
       return new Promise((resolve, reject) => {
-        UrlApi.post("/Post", postInfo)
+        UrlApi.post("/post", postInfo)
         .then(function(response){
           resolve(response);
         })
@@ -129,10 +140,11 @@ export default createStore({
     },
     getAllPosts({commit}) {
       return new Promise((resolve, reject) => {
-        UrlApi.get("/Post")
+        UrlApi.get("/post")
         .then(function(response){
-          commit('importAllPosts', response)
-          state.postLoaded = true;
+          let myObj = response.data
+          commit('importAllPosts', myObj)
+          // commit('statutPostLoaded', true);
           resolve(response);
         })
         .catch(function(error){
@@ -140,21 +152,22 @@ export default createStore({
         })
       })
     },
-    // getOnePost({commit}, id) {
-    //   return new Promise((resolve, reject) => {
-    //     UrlApi.get("/Post/id")
-    //     .then(function(response){
-    //       commit('importOnePost', response)
-    //       resolve(response);
-    //   })
-    //     .catch(function(error){
-    //       reject(error);
-    //   })
-    //   })
-    // },
+    getOnePost({commit}, currentId) {
+      return new Promise((resolve, reject) => {
+        UrlApi.get("/post")
+        .then(function(response){
+          let myObj = response.data
+          commit('importOnePost', myObj)
+          resolve(response);
+      })
+        .catch(function(error){
+          reject(error);
+      })
+      })
+    },
     deleteOnePost({commit}, id){
       return new Promise ((resolve, reject) =>{
-        UrlApi.delete("/Post/id")
+        UrlApi.delete("/post/id")
         .then(function(response){
           commit('resetCurrentPost')
           resolve(response);

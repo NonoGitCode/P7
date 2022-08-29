@@ -16,7 +16,6 @@
 
 import HeaderConnected from "../components/HeaderConnected.vue"
 import { mapState } from 'vuex';
-
 export default {
     name: "CreatePost",
     data() {
@@ -39,15 +38,6 @@ export default {
                 return false
             };
         },
-        profileId(){
-            return this.$store.state.user.userId;
-        },
-        postPhotoName(){
-            return this.$store.state.postPhotoName;
-        },
-        postPseudo(){
-            return this.$store.state.postPseudo;
-        },
         postDescription: {
             get() {
                 return this.$store.state.postDescription
@@ -64,29 +54,25 @@ export default {
             const fileName = this.file.name
             this.$store.commit("fileNameChange", fileName);
             this.$store.commit("createFileURL", URL.createObjectURL(this.file));
+            this.$store.commit('fileInfo', this.file)
         },
         async poster(){
             if (this.postDescription != "" && this.$store.state.postPhotoName !=""){
-                const self = this;
-                let Post = {
-                description: this.$store.state.postDescription,
-                pseudo: this.$store.state.user.pseudo
-                };
-                let file = {
-                    filename: this.$store.state.postPhotoName,
-                    imageUrl: this.$store.state.postPhotoFileURL,
-                };
-                console.log(file)
-                let infoCreatePost = JSON.stringify({Post,file}) 
-                console.log(infoCreatePost)
-                await this.$store.dispatch('createPost', infoCreatePost)
+                let formData = new FormData();
+                    formData.append('image', this.$store.state.PostInfo);
+                    formData.append('Post', JSON.stringify({
+                        description: this.$store.state.postDescription,
+                        pseudo: this.$store.state.user.pseudo,
+                    }))
+                await this.$store.dispatch('createPost', formData)
                 .then((response) =>{
                         console.log(response)
+                        this.$store.commit("updatePostDescription", null)
                 }).catch((error)=>{
                         console.log(error);
                 })
                 await this.$store.dispatch("getAllPosts")
-                this.$router.push({ name: "post", params: {postid: postID } })
+                this.$router.push('/')
                 return;
             };
         },

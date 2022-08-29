@@ -9,6 +9,9 @@ export default {
 }
 </script>
 <style>
+body{
+  margin: 0px
+}
 #app{
   font-family: 'Lato', sans-serif;
   background-color: rgb(231, 231, 231);

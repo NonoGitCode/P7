@@ -36,6 +36,7 @@ export default {
             pseudo: "",
             numberOfLikes: 0,
             currentPost: null,
+            currentId:null,
         };
     },
     components: {HeaderConnected},
@@ -44,12 +45,14 @@ export default {
             this.$router.push('/login')
             return;
         }
+        const id = new URL(window.location.href).href
+        currentId = id.substr(29,200)
+        this.$store.dispatch("setCurrentId", currentId)
     },
-    // async mounted(){
-    //     this.currentPost = await this.$store.state.allPosts.filter(post => {
-    //         return post.postID === this.$route.params.postid
-    //     })
-    // },
+    async mounted(){
+        let currentId = this.$store.state.currentId
+        await this.$store.dispatch('getOnePost', currentId)
+    },
     computed: {
         checkAdmin(){
             const user = localStorage.getItem('user')
@@ -71,6 +74,7 @@ export default {
         },
         beforeDestroy(){
             this.$store.commit("grantAdmin", null)
+            // this.$store.commit("resetCurrentPost")
         },
         // async getOnePost(){
         //     const self = this;
@@ -87,23 +91,23 @@ export default {
         ...mapState(['status'])
     },
     methods:{
-        editPost(){
-            if(this.$store.state.isAdmin == true){
-                this.$router.push('/edit')
-            }
-        },
-        async deletePost(){
-            if(this.$store.state.isAdmin == true){
-                const self = this;
-                await this.$store.dispatch('deleteOnePost')
-               .then((response)=> {
-                    self.$router.push('/')
-                    console.log(response)
-               }).catch((error) => {
-                    console.log(error)
-               })
-            };
-        },
+        // editPost(){
+        //     if(this.$store.state.isAdmin == true){
+        //         this.$router.push('/edit')
+        //     }
+        // },
+        // async deletePost(){
+        //     if(this.$store.state.isAdmin == true){
+        //         const self = this;
+        //         await this.$store.dispatch('deleteOnePost')
+        //        .then((response)=> {
+        //             self.$router.push('/')
+        //             console.log(response)
+        //        }).catch((error) => {
+        //             console.log(error)
+        //        })
+        //     };
+        // },
         
 
     }
