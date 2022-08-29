@@ -1,12 +1,14 @@
 <template>
     <div class="container">
+    <!-- <div class="container" v-if="currentBlog"> -->
         <p class="pseudo"> {{ post.pseudo }} </p>
             <img :src = post.imgUrl  class="ImgPost"/>
         <p class="description"> {{ post.description }} </p>
         <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
         <div class= "postFooter"> 
             <a class="NumberLikes"> {{post.numberOfLikes}} </a>
-            <router-link to="/id" class="link">Aller au poste</router-link>
+            <router-link to="/post/:id" class="link">Aller au poste</router-link>
+            <!-- <router-link :to="{name: 'post', params: { postid: this.post.postID } }" class="link">Aller au poste</router-link> -->
         </div>
     </div>
 </template>
@@ -23,6 +25,8 @@ export default {
             Description:'',
             imgUrl: '',
             NumberOfLikes: 0,
+            postID:0
+            //dynamiser la récupération des infos du fetch
         }
     },
     // components: { 

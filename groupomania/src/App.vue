@@ -23,7 +23,7 @@ h4 {
   margin-top: 16px;
 }
 p{
-  font-size: 18px;
+  font-size: 16px;
 }
 .Header{
   display: flex;
@@ -37,9 +37,19 @@ p{
   max-height: 110px;
   object-fit: cover;
 }
-@media (max-width:520px){
+.pseudo{
+  font-size: 18px;
+}
+.NumberLikes{
+  font-size: 12px;
+}
+@media (max-width:715px){
   .logo{
     width: 150px;
+  }
+  nav{
+    display: flex;
+    flex-direction: column;
   }
 }
 .linkHeader{

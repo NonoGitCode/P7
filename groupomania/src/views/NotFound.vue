@@ -16,7 +16,13 @@ import HeaderLogin from '../components/HeaderLogin.vue';
 
 export default {
     name: "NotFound",
-    components: {HeaderLogin}
+    components: {HeaderLogin},
+    mounted(){
+        if(this.$store.state.userId == -1){
+            this.$router.push('/login')
+            return;
+        };
+    },
 }   
 </script>
 

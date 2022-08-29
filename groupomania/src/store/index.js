@@ -11,6 +11,7 @@ if (!user){
     userId: -1,
     token: '',
     level: 0,
+    pseudo:'',
   };
 }else{
   try{
@@ -20,9 +21,10 @@ if (!user){
     user = {
       userId: -1,
       token:'',
-      level: 0
+      level: 0,
+      pseudo:'',
     };
-  }
+  };
 };
 
 export default createStore({
@@ -30,6 +32,14 @@ export default createStore({
     status:'',
     user:user,
     isAdmin: null,
+    postLoaded: null,
+    allPosts:[],
+    postDescription: "",
+    postPseudo: null,
+    postPhotoName:"",
+    postPhotoFileURL: null,
+    currentPost:null,
+    postCoverPhoto: null,
   },
   getters: {
   },
@@ -47,13 +57,33 @@ export default createStore({
         userId: -1,
         token:'',
         level: 0
-      }
+      },
       localStorage.removeItem('user');
     },
     grantAdmin(state, value){
       state.isAdmin = value
-    }
-
+    },
+    newPost(state, payload){
+      state.postDescription = payload;
+    },
+    updatePostDescription(state, payload){
+      state.postDescription = payload
+    },
+    fileNameChange(state, payload){
+      state.postPhotoName = payload;
+    },
+    createFileURL(state, payload){
+      state.postPhotoFileURL = payload;
+    },
+    importAllPosts(state, payload){
+      state.allPosts = payload
+    },
+    // importOnePost(state, payload){
+    //   state.currentPost = payload
+    // },
+    // resetCurrentPost(state){
+    //   state.currentPost = null
+    // }
   },
   actions: {
     createAccount: ({commit}, userInfos) => {
@@ -68,7 +98,7 @@ export default createStore({
             commit('setStatus', 'error_create');
             reject(error);
           });
-      })
+      });
     },
     login: ({commit}, userInfos) => {
       return new Promise((resolve, reject) => {
@@ -82,13 +112,27 @@ export default createStore({
             commit('setStatus', 'error_login');
             reject(error);
           });
-      })
+      });
     },
-    poster: ({commit}, postInfo) => {
+    createPost: ({commit}, postInfo) => {
+      console.log(postInfo)
       commit;
       return new Promise((resolve, reject) => {
-        UrlApi.post("/post", postInfo)
+        UrlApi.post("/Post", postInfo)
         .then(function(response){
+          resolve(response);
+        })
+        .catch(function(error){
+          reject(error);
+        })
+      });
+    },
+    getAllPosts({commit}) {
+      return new Promise((resolve, reject) => {
+        UrlApi.get("/Post")
+        .then(function(response){
+          commit('importAllPosts', response)
+          state.postLoaded = true;
           resolve(response);
         })
         .catch(function(error){
@@ -96,5 +140,41 @@ export default createStore({
         })
       })
     },
-  }
-})
+    // getOnePost({commit}, id) {
+    //   return new Promise((resolve, reject) => {
+    //     UrlApi.get("/Post/id")
+    //     .then(function(response){
+    //       commit('importOnePost', response)
+    //       resolve(response);
+    //   })
+    //     .catch(function(error){
+    //       reject(error);
+    //   })
+    //   })
+    // },
+    deleteOnePost({commit}, id){
+      return new Promise ((resolve, reject) =>{
+        UrlApi.delete("/Post/id")
+        .then(function(response){
+          commit('resetCurrentPost')
+          resolve(response);
+        })
+        .catch(function(error){
+          reject(error);
+        })
+      })
+    },
+    modifyPost({commit}, postID ,postInfo){
+      commit;
+      return new Promise((resolve, reject) => {
+        UrlApi.put({name: "post", params: {postid: postID}}, postInfo)
+        .then(function(response){
+          resolve(response);
+        })
+        .catch(function(error){
+          reject(error);
+        })
+      });
+    }
+  },
+});

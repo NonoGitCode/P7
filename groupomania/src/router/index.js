@@ -36,7 +36,7 @@ const routes = [
     }
   },
   {
-    path: '/id',
+    path: '/post/:id',
     name: 'post',
     component: SinglePost,
     props:true,
