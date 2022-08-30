@@ -106,7 +106,7 @@ export default {
                         }).catch((error)=>{
                                 console.log(error);
                         })
-                        await this.$store.dispatch("getAllPosts")
+                        this.$store.commit("updatePostDescription", null)
                         this.$router.push("/")
                         return;
                     } else {
@@ -120,14 +120,13 @@ export default {
                             pseudo: this.$store.state.user.pseudo,
                             currentId: currentId
                         }
-                        console.log(formData)
                         await this.$store.dispatch('modifyPost', formData, currentId)
                         .then((response) =>{
                                 console.log(response)
                         }).catch((error)=>{
                                 console.log(error);
                         })
-                        await this.$store.dispatch("getAllPosts")
+                        this.$store.commit("updatePostDescription", null)
                         this.$router.push("/")
                         return;
                     }

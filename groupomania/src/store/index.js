@@ -181,14 +181,9 @@ export default createStore({
     modifyPost: ({commit}, formData) => {
       commit;
       console.log(formData)
-      let Post = {
-        Post : formData
-      }
-      console.log(Post)
-      console.log(JSON.stringify(Post))
       return new Promise((resolve, reject) => {
         let currentUrl = `/post/${formData.currentId}`
-        UrlApi.put(`${currentUrl}`, Post)
+        UrlApi.put(`${currentUrl}`, formData)
         .then(function(response){
           resolve(response);
         })

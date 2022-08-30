@@ -1,6 +1,5 @@
 const Post = require('../models/Post');
 const fs = require('fs');
-const { Console } = require('console');
 
 
 //Fonction create Post qui va récuperer les informations dans le body de la requête selon le schema, elle va y ajouter l'URL de l'image généré ainsi que l'initialisation des likes et dislike
@@ -20,7 +19,9 @@ exports.createPost = (req, res, next) => {
             .then(() => { res.status(201).json({message: 'Post enregistrée !'})})
             .catch(error => { res.status(400).json( { error })})
     } else {
-        const PostObject = JSON.parse(req.body.Post);
+        const PostObject = req.body
+        console.log(PostObject)
+        console.log(req.body)
         const postObj = new Post({
             ...PostObject,
             userId: req.auth.userId,
@@ -44,42 +45,49 @@ exports.modifyPost = (req, res, next) => {
             imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
             modifyTime: Date.now()
         } : { ...req.body };
-        delete PostObject._userId;
         Post.findOne({_id: req.params.id})
             .then((Post)=> {
                 if(req.auth.level >= 1){
                     Post.updateOne({ _id: req.params.id}, {...PostObject, _id: req.params.id,})
-                    .then(() => res.status(200).json({ message: 'Post modififée !'}))
+                    .then(() => res.status(200).json({ message: 'Post modififée 4 !'}))
                     .catch((error)=> res.status(400).json({ error }));
                 }else{
                     if(Post.userId != req.auth.userId){
                         return res.status(403).json({ message: 'unauthorized request'});
                     }else{
                         Post.updateOne({ _id: req.params.id}, {...PostObject, _id: req.params.id})
-                            .then(() => res.status(200).json({ message: 'Post modififée !'}))
+                            .then(() => res.status(200).json({ message: 'Post modififée 3!'}))
                             .catch((error)=> res.status(400).json({ error }));
                     }
                 }
             })
             .catch((error)=> res.status(500).json({ error }));
     } else {
-        const PostObject = req.file ? {
-            ...JSON.parse(req.body.Post),
+        PostObject = req.body
+        console.log(PostObject)
+        console.log(PostObject.currentId)
+        const postObj = {
+            ...PostObject,
             modifyTime: Date.now()
-        } : { ...req.body };
-        delete PostObject._userId;
-        Post.findOne({_id: req.params.id})
+        }
+        console.log(postObj)
+        Post.findOne({_id: PostObject.currentId})
             .then((Post)=> {
+                // console.log(PostObject.description)
                 if(req.auth.level >= 1){
-                    Post.updateOne({ _id: req.params.id}, {...PostObject, _id: req.params.id,})
-                    .then(() => res.status(200).json({ message: 'Post modififée !'}))
+                    // console.log(Post)
+                    Post.updateOne({ _id: PostObject.currentId}, {$set: {...postObj}})
+                    .then((result) => {
+                        console.log(result)
+                        res.status(200).json({ message: 'Post modififée 1 !', Post: Post })
+                    })
                     .catch((error)=> res.status(400).json({ error }));
-                }else{
+                } else {
                     if(Post.userId != req.auth.userId){
                         return res.status(403).json({ message: 'unauthorized request'});
-                    }else{
+                    } else {
                         Post.updateOne({ _id: req.params.id}, {...PostObject, _id: req.params.id})
-                            .then(() => res.status(200).json({ message: 'Post modififée !'}))
+                            .then(() => res.status(200).json({ message: 'Post modififée  2!'}))
                             .catch((error)=> res.status(400).json({ error }));
                     }
                 }
@@ -139,7 +147,7 @@ exports.likePost = (req, res, next) => {
                 if(Post.usersLiked.includes(req.body.userId)){
                     return res.status(409).json({ message: 'Vous avez déjà liké'})
                 }
-                if(!Post.usersLiked.includes(req.body.userId) && !Post.usersDisliked.includes(req.body.userId) )
+                if(!Post.usersLiked.includes(req.body.userId))
                     Post.updateOne({ _id: req.params.id }, {$inc: {likes:1}, $push: {usersLiked: req.body.userId}})
                         .then(() => res.status(200).json({ message: 'Like ajouté'}))
                         .catch(error => res.status(400).json({ error }));
@@ -150,7 +158,7 @@ exports.likePost = (req, res, next) => {
                         .then(() => res.status(200).json({ message: 'like retiré'}))
                         .catch(error => res.status(400).json({ error }));
                 }
-                if(!Post.usersLiked.includes(req.body.userId) && !Post.usersDisliked.includes(req.body.userId)){
+                if(!Post.usersLiked.includes(req.body.userId)){
                     return res.status(409).json({message: 'Il faut avoir liké pour revenir à 0'})
                 }
             }

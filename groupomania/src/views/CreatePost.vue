@@ -32,7 +32,7 @@ export default {
     },
     computed:{
         validatedFields() {
-            if (this.postDescription != "" && this.$store.state.postPhotoName !=""){
+            if (this.postDescription != ""){
                 return true;
             } else {
                 return false
@@ -71,10 +71,25 @@ export default {
                 }).catch((error)=>{
                         console.log(error);
                 })
-                await this.$store.dispatch("getAllPosts")
                 this.$router.push('/')
                 return;
-            };
+            } else {
+                if(this.postDescription != "" && this.$store.state.postPhotoName =="" ){
+                    let formData = {
+                        description: this.$store.state.postDescription,
+                        pseudo: this.$store.state.user.pseudo,
+                    }
+                    await this.$store.dispatch('createPost', formData)
+                .then((response) =>{
+                        console.log(response)
+                        this.$store.commit("updatePostDescription", null)
+                }).catch((error)=>{
+                        console.log(error);
+                })
+                this.$router.push('/')
+                return;
+                }
+            }
         },
     },
 };  
