@@ -178,7 +178,7 @@ export default createStore({
         })
       })
     },
-    modifyPost: ({commit}, formData) => {
+    modifyPost: ({commit}, formData, currentId) => {
       commit;
       console.log(formData)
       return new Promise((resolve, reject) => {

@@ -55,6 +55,7 @@ export default {
             this.$store.commit("fileNameChange", fileName);
             this.$store.commit("createFileURL", URL.createObjectURL(this.file));
             this.$store.commit('fileInfo', this.file)
+            console.log(this.$store.state.PostInfo)
         },
         async poster(){
             if (this.postDescription != "" && this.$store.state.postPhotoName !=""){

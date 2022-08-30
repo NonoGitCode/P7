@@ -1,5 +1,6 @@
 const Post = require('../models/Post');
 const fs = require('fs');
+const mongoose = require('mongoose');
 
 
 //Fonction create Post qui va récuperer les informations dans le body de la requête selon le schema, elle va y ajouter l'URL de l'image généré ainsi que l'initialisation des likes et dislike

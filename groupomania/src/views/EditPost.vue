@@ -5,7 +5,7 @@
         <div class="container">
             <p class="textDownload"> Télécharger une image</p>
             <p class="small" v-if="fileadded">Vous n'êtes pas obligé de charger une nouvelle image si vous souhaitez garder l'ancienne</p>
-            <input type="file" class="fileSubmit" ref="myFiles" @change="addFiles" accept="image/png, image/jpeg, image/jpg">
+            <input type="file" class="fileSubmit" ref="postPhoto" @change="fileChange" accept=".png, .jpeg, .jpg">
             <p class="titleDescription"> Ecrivez votre publication juste en dessous</p>
             <textarea v-model="postDescription" placeholder="Ecrivez votre publication ici" id="description"/>
             <button @click="modifyPost" class="btn" :class="{'button--disabled' : !validatedFields}">Poster</button>
@@ -23,8 +23,8 @@ export default {
         return {
             post: [],
             currentPost: null,
-
             fileadded: true,
+            file: null,
 
         };
     },
@@ -83,14 +83,16 @@ export default {
             this.$store.commit("fileNameChange", fileName);
             this.$store.commit("createFileURL", URL.createObjectURL(this.file));
             this.$store.commit('fileInfo', this.file)
-        },
-        addFiles(){
+            console.log(this.$store.state.PostInfo)
             return this.fileadded = false
         },
         async modifyPost(){
             if(this.$store.state.user.level >= 1 || this.$store.state.userId == this.post.userId){
                 if (this.postDescription != ""){
-                    if(this.$store.state.postInfo){
+                    console.log(this.$store.state.PostInfo)
+                    if(this.$store.state.postInfo != null){
+                        console.log(this.$store.state.postInfo)
+                        console.log("salut")
                         let formData = new FormData ();
                         const id = new URL(window.location.href).href
                         let currentId = id.substr(34,200)
@@ -135,6 +137,9 @@ export default {
             }
         },
     },
+    beforeDestroy(){
+        this.$store.commit("updatePostDescription", null)
+    }
 };  
 
 </script>
