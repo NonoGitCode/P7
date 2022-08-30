@@ -154,7 +154,8 @@ export default createStore({
     },
     getOnePost({commit}, currentId) {
       return new Promise((resolve, reject) => {
-        UrlApi.get("/post")
+        let currentUrl = `post/${currentId}`
+        UrlApi.get(`${currentUrl}`)
         .then(function(response){
           let myObj = response.data
           commit('importOnePost', myObj)
@@ -177,10 +178,17 @@ export default createStore({
         })
       })
     },
-    modifyPost({commit}, postID ,postInfo){
+    modifyPost: ({commit}, formData) => {
       commit;
+      console.log(formData)
+      let Post = {
+        Post : formData
+      }
+      console.log(Post)
+      console.log(JSON.stringify(Post))
       return new Promise((resolve, reject) => {
-        UrlApi.put({name: "post", params: {postid: postID}}, postInfo)
+        let currentUrl = `/post/${formData.currentId}`
+        UrlApi.put(`${currentUrl}`, Post)
         .then(function(response){
           resolve(response);
         })

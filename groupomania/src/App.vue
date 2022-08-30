@@ -123,12 +123,20 @@ input{
   min-height: 20px;
   margin: 5px 0px;
 }
+textarea{
+  height: 120px;
+}
 .ImgPost{
   max-width: 350px;
   object-fit: cover;
   margin-left: 22%;
   margin-right: 22%;
 }
-
+.small{
+  margin: 0px;
+  margin-top: -10px;
+  font-size: 12px;
+  color: #0c42cb;
+}
 </style>
 

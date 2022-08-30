@@ -6,7 +6,7 @@
             <p class="textDownload"> Télécharger une image</p>
             <input type="file" class="fileSubmit" ref="postPhoto" @change="fileChange" accept=".png, .jpeg, .jpg">
             <p class="titleDescription"> Ecrivez votre publication juste en dessous</p>
-            <textarea v-model="postDescription" id="description"/>
+            <textarea v-model="postDescription" placeholder="Ecrivez votre publication ici" id="description"/>
             <button @click="poster" class="btn" :class="{'button--disabled' : !validatedFields}">Poster</button>
         </div>
     </div>
@@ -81,7 +81,5 @@ export default {
 
 </script>
 <style scoped>
-textarea{
-    height: 120px;
-}
+
 </style>

@@ -2,7 +2,7 @@
     <div class="container">
     <!-- <div class="container" v-if="currentBlog"> -->
         <p class="pseudo"> {{ this.post.pseudo }} </p>
-            <!-- <img :src=".../backend/images/{{  }}"  class="ImgPost"/> -->
+            <img :src="this.post.imageUrl"  class="ImgPost"/>
         <p class="description"> {{ this.post.description }} </p>
         <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
         <div class= "postFooter"> 

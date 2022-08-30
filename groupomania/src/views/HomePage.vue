@@ -28,10 +28,9 @@ export default {
         }
     },
     async mounted(){
-        
         await this.$store.dispatch('getAllPosts')
-        console.log(this.$store.state.allPosts)
         this.post = this.$store.state.allPosts
+        console.log(this.post)
     },
     computed: {
         

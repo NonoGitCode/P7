@@ -4,9 +4,10 @@
         <h1>Modifier un post</h1>
         <div class="container">
             <p class="textDownload"> Télécharger une image</p>
-            <input type="file" class="fileSubmit" ref="myFiles" @change="previewFiles" accept="image/png, image/jpeg, image/jpg">
+            <p class="small" v-if="fileadded">Vous n'êtes pas obligé de charger une nouvelle image si vous souhaitez garder l'ancienne</p>
+            <input type="file" class="fileSubmit" ref="myFiles" @change="addFiles" accept="image/png, image/jpeg, image/jpg">
             <p class="titleDescription"> Ecrivez votre publication juste en dessous</p>
-            <textarea v-model="postDescription" id="description"/>
+            <textarea v-model="postDescription" placeholder="Ecrivez votre publication ici" id="description"/>
             <button @click="modifyPost" class="btn" :class="{'button--disabled' : !validatedFields}">Poster</button>
         </div>
     </div>
@@ -20,8 +21,11 @@ export default {
     name: "EditPost",
     data() {
         return {
+            post: [],
             currentPost: null,
-            postDescription:"",
+
+            fileadded: true,
+
         };
     },
     components: {HeaderConnected},
@@ -30,45 +34,105 @@ export default {
             this.$router.push('/login')
             return;
         }
+        console.log(this.currentPost)
+        this.postDescription = this.post.description
+        console.log(this.post.description)
+    },
+    async mounted(){
+        const id = new URL(window.location.href).href
+        let currentId = id.substr(34,200)
+        console.log(currentId)
+        await this.$store.dispatch('getOnePost', currentId)
+        this.post = this.$store.state.currentPost
+        console.log(this.post)
+        console.log(this.$store.state.user.userId)
+        this.postDescription = this.post.description
     },
     computed:{
         ...mapState({
             user: 'userInfos',
         }),
         validatedFields() {
-            if (this.postDescription != "" && this.$store.state.postPhotoName !=""){
+            if (this.postDescription != ""){
                 return true;
             } else {
                 return false
             };
         },
         
+        // checkFile(){
+        //     if (this.$refs.postPhoto.files[0] === undefined){
+        //        return true 
+        //     } else {
+        //         return false
+        //     }
+        // }
+        postDescription: {
+            get() {
+                return this.$store.state.postDescription
+            },
+            set(payload) {
+                this.$store.commit("updatePostDescription", payload);
+            },
+        },
     },
     methods:{
+        fileChange(){
+            this.file = this.$refs.postPhoto.files[0];
+            const fileName = this.file.name
+            this.$store.commit("fileNameChange", fileName);
+            this.$store.commit("createFileURL", URL.createObjectURL(this.file));
+            this.$store.commit('fileInfo', this.file)
+        },
+        addFiles(){
+            return this.fileadded = false
+        },
         async modifyPost(){
-            if(this.$store.state.user.level >= 1){
-                if (this.postDescription != "" && this.$store.state.postPhotoName !=""){
-                    const self = this;
-                    let Post = {
-                    description: this.$store.state.postDescription,
-                    pseudo: this.$store.state.user.pseudo
-                    };
-                    let file = {
-                        filename: this.$store.state.postPhotoName,
-                        imageUrl: this.$store.state.postPhotoFileURL,
-                    };
-                    let infoCreatePost = JSON.stringify({Post,file}) 
-    
-                    await this.$store.dispatch('modifyPost', infoCreatePost)
-                    .then((response) =>{
-                            console.log(response)
-                    }).catch((error)=>{
-                            console.log(error);
-                    })
-                    await this.$store.dispatch("getAllPosts")
-                    this.$router.push({ name: "post", params: {postid: postID } })
-                    return;
-                };
+            if(this.$store.state.user.level >= 1 || this.$store.state.userId == this.post.userId){
+                if (this.postDescription != ""){
+                    if(this.$store.state.postInfo){
+                        let formData = new FormData ();
+                        const id = new URL(window.location.href).href
+                        let currentId = id.substr(34,200)
+                        console.log(this.$store.state.postDescription, this.$store.state.postInfo )
+                        formData.append('image', this.$store.state.postInfo);
+                        formData.append('Post', JSON.stringify({
+                            description: this.$store.state.postDescription,
+                            pseudo: this.$store.state.user.pseudo,
+                        }))
+                        await this.$store.dispatch('modifyPost', formData, currentId)
+                        .then((response) =>{
+                                console.log(response)
+                        }).catch((error)=>{
+                                console.log(error);
+                        })
+                        await this.$store.dispatch("getAllPosts")
+                        this.$router.push("/")
+                        return;
+                    } else {
+
+                        const id = new URL(window.location.href).href
+                        let currentId = id.substr(34,200)
+                        console.log(this.$store.state.postDescription)
+                        console.log(this.$store.state.user.pseudo)
+                        let formData = {
+                            description: this.$store.state.postDescription,
+                            pseudo: this.$store.state.user.pseudo,
+                            currentId: currentId
+                        }
+                        console.log(formData)
+                        await this.$store.dispatch('modifyPost', formData, currentId)
+                        .then((response) =>{
+                                console.log(response)
+                        }).catch((error)=>{
+                                console.log(error);
+                        })
+                        await this.$store.dispatch("getAllPosts")
+                        this.$router.push("/")
+                        return;
+                    }
+                }
+                
             }
         },
     },

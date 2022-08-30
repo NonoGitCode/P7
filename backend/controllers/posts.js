@@ -5,48 +5,87 @@ const { Console } = require('console');
 
 //Fonction create Post qui va récuperer les informations dans le body de la requête selon le schema, elle va y ajouter l'URL de l'image généré ainsi que l'initialisation des likes et dislike
 exports.createPost = (req, res, next) => {
-    console.log(req.file)
-    const PostObject = JSON.parse(req.body.Post);
-    const postObj = new Post({
-        ...PostObject,
-        userId: req.auth.userId,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-        likes: 0,
-        createTime: Date.now(),
-        updateTime: Date.now(),
-        usersLiked: [],
-    });
-    postObj.save()
-        .then(() => { res.status(201).json({message: 'Post enregistrée !'})})
-        .catch(error => { res.status(400).json( { error })})
+    if(req.file){
+        const PostObject = JSON.parse(req.body.Post);
+        const postObj = new Post({
+            ...PostObject,
+            userId: req.auth.userId,
+            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+            likes: 0,
+            createTime: Date.now(),
+            updateTime: Date.now(),
+            usersLiked: [],
+        });
+        postObj.save()
+            .then(() => { res.status(201).json({message: 'Post enregistrée !'})})
+            .catch(error => { res.status(400).json( { error })})
+    } else {
+        const PostObject = JSON.parse(req.body.Post);
+        const postObj = new Post({
+            ...PostObject,
+            userId: req.auth.userId,
+            likes: 0,
+            createTime: Date.now(),
+            updateTime: Date.now(),
+            usersLiked: [],
+        });
+        postObj.save()
+            .then(() => { res.status(201).json({message: 'Post enregistrée !'})})
+            .catch(error => { res.status(400).json( { error })})
+    }
 };
 
 
 //Fonction modify Post qui récupère les informations transmises dans le body et qui met à jour ce qui a été modifié (après avoir vérifié si l'utilisateur est bien le créateur de l'objet Post en premier lieu)
 exports.modifyPost = (req, res, next) => { 
-    const PostObject = req.file ? {
-        ...JSON.parse(req.body.Post),
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-        modifyTime: Date.now()
-    } : { ...req.body };
-    delete PostObject._userId;
-    Post.findOne({_id: req.params.id})
-        .then((Post)=> {
-            if(level >= 1){
-                Post.updateOne({ _id: req.params.id}, {...PostObject, _id: req.params.id,})
-                .then(() => res.status(200).json({ message: 'Post modififée !'}))
-                .catch((error)=> res.status(400).json({ error }));
-            }else{
-                if(Post.userId != req.auth.userId){
-                    return res.status(403).json({ message: 'unauthorized request'});
+    if(req.file){
+        const PostObject = req.file ? {
+            ...JSON.parse(req.body.Post),
+            imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+            modifyTime: Date.now()
+        } : { ...req.body };
+        delete PostObject._userId;
+        Post.findOne({_id: req.params.id})
+            .then((Post)=> {
+                if(req.auth.level >= 1){
+                    Post.updateOne({ _id: req.params.id}, {...PostObject, _id: req.params.id,})
+                    .then(() => res.status(200).json({ message: 'Post modififée !'}))
+                    .catch((error)=> res.status(400).json({ error }));
                 }else{
-                    Post.updateOne({ _id: req.params.id}, {...PostObject, _id: req.params.id})
-                        .then(() => res.status(200).json({ message: 'Post modififée !'}))
-                        .catch((error)=> res.status(400).json({ error }));
+                    if(Post.userId != req.auth.userId){
+                        return res.status(403).json({ message: 'unauthorized request'});
+                    }else{
+                        Post.updateOne({ _id: req.params.id}, {...PostObject, _id: req.params.id})
+                            .then(() => res.status(200).json({ message: 'Post modififée !'}))
+                            .catch((error)=> res.status(400).json({ error }));
+                    }
                 }
-            }
-        })
-        .catch((error)=> res.status(500).json({ error }));
+            })
+            .catch((error)=> res.status(500).json({ error }));
+    } else {
+        const PostObject = req.file ? {
+            ...JSON.parse(req.body.Post),
+            modifyTime: Date.now()
+        } : { ...req.body };
+        delete PostObject._userId;
+        Post.findOne({_id: req.params.id})
+            .then((Post)=> {
+                if(req.auth.level >= 1){
+                    Post.updateOne({ _id: req.params.id}, {...PostObject, _id: req.params.id,})
+                    .then(() => res.status(200).json({ message: 'Post modififée !'}))
+                    .catch((error)=> res.status(400).json({ error }));
+                }else{
+                    if(Post.userId != req.auth.userId){
+                        return res.status(403).json({ message: 'unauthorized request'});
+                    }else{
+                        Post.updateOne({ _id: req.params.id}, {...PostObject, _id: req.params.id})
+                            .then(() => res.status(200).json({ message: 'Post modififée !'}))
+                            .catch((error)=> res.status(400).json({ error }));
+                    }
+                }
+            })
+            .catch((error)=> res.status(500).json({ error }));
+    }
 
 };
 

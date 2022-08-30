@@ -3,16 +3,16 @@
         <HeaderConnected />
         <div class="container" >
         <!-- <div class="container" v-if="currentBlog"> -->
-            <p class="pseudo"> {{ pseudo }} </p>
+            <p class="pseudo"> {{ this.post.pseudo }} </p>
             <!-- <p class="pseudo"> {{ this.currentPost[0].postPseudo }} </p> -->
-                <img src="../assets/test.jpg"  class="ImgPost"/>
+                <img :src="this.post.imageUrl"  class="ImgPost"/>
                 <!-- <img :src= this.currentPost[0].postCoverPhoto  class="ImgPost"/> -->
-            <p class="description"> {{ description }} </p>
+            <p class="description"> {{ this.post.description }} </p>
             <!-- <p class="description"> {{ this.currentPost[0].description }}</p>  -->
             
             <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
             <div class= "postFooter"> 
-                <a class="numberOfLikes"> {{ numberOfLikes }} </a>
+                <a class="numberOfLikes"> {{ this.post.numberOfLikes }} </a>
                 <!-- <a class="numberOfLikes"> {{ this.currentPost[0].numberOfLikes }} </a> -->
                 <button class="btn" @click="editPost" :class="{'button--disabled' : !checkAdmin}">Modifier</button>
                 <button class="btn" @click="deletePost" :class="{'button--disabled' : !checkAdmin}" >Supprimer</button>
@@ -28,13 +28,9 @@ import { mapState } from 'vuex';
 
 export default {
     name: "SinglePost",
-    props:["post"],
     data() {
         return {
-            description: "",
-            imageUrl: "",
-            pseudo: "",
-            numberOfLikes: 0,
+            post: [],
             currentPost: null,
             currentId:null,
         };
@@ -45,22 +41,24 @@ export default {
             this.$router.push('/login')
             return;
         }
-        const id = new URL(window.location.href).href
-        currentId = id.substr(29,200)
-        this.$store.dispatch("setCurrentId", currentId)
     },
     async mounted(){
-        let currentId = this.$store.state.currentId
+        const id = new URL(window.location.href).href
+        let currentId = id.substr(29,200)
         await this.$store.dispatch('getOnePost', currentId)
+        this.post = this.$store.state.currentPost
+        console.log(this.post)
+        console.log(this.$store.state.user.userId)
     },
     computed: {
-        checkAdmin(){
+       async checkAdmin(){
             const user = localStorage.getItem('user')
             if(user === null){
                 this.$router.push('/login')
             } else {
                 let userInfo = JSON.parse(user)
-                if (userInfo.level >= 1){
+                let currendPostUserID = this.post.userId
+                if (userInfo.level >= 1 || userInfo.userId == currendPostUserID){
                     this.$store.commit('grantAdmin', true)
                     return true
                 } else {
@@ -74,7 +72,6 @@ export default {
         },
         beforeDestroy(){
             this.$store.commit("grantAdmin", null)
-            // this.$store.commit("resetCurrentPost")
         },
         // async getOnePost(){
         //     const self = this;
@@ -91,11 +88,15 @@ export default {
         ...mapState(['status'])
     },
     methods:{
-        // editPost(){
-        //     if(this.$store.state.isAdmin == true){
-        //         this.$router.push('/edit')
-        //     }
-        // },
+        editPost(){
+            let currendUserId = this.$store.state.user.userId;
+            let currendPostUserID = this.$store.state.currentPost.userId;
+            let currentLevelUser = this.$store.state.user.level
+            if(currendUserId == currendPostUserID || currentLevelUser >= 1){
+                console.log(this.$store.state.currentId)
+                this.$router.push(`edit/${this.$store.state.currentPost._id}`)
+            }
+        },
         // async deletePost(){
         //     if(this.$store.state.isAdmin == true){
         //         const self = this;
