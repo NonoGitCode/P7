@@ -21,8 +21,6 @@ exports.createPost = (req, res, next) => {
             .catch(error => { res.status(400).json( { error })})
     } else {
         const PostObject = req.body
-        console.log(PostObject)
-        console.log(req.body)
         const postObj = new Post({
             ...PostObject,
             userId: req.auth.userId,
@@ -153,52 +151,3 @@ exports.likePost = (req, res, next) => {
     .catch(error => res.status(404).json({ error }));
     
 }
-    // Post.findById(req.params.id)
-    // .then(Post =>{
-    //     if(req.body.like === 1){
-    //         if(Post.usersLiked.includes(req.auth.userId)){
-    //             return res.status(409).json({ message: 'Vous avez déjà liké'})
-    //         }else{
-    //             Post.findOneAndUpdate({_id: req.params.id}, {$push:{usersLiked: req.auth.userId}, $inc:{likes:1} })
-    //                 .then(() => res.status(200).json({ message: 'Like ajouté'}))
-    //                 .catch(error => res.status(400).json({error }));  
-    //         }
-    //     }
-    //     if(req.body.like === 0){
-    //         if(Post.usersLiked.includes(req.auth.userId)){
-    //             Post.findOneAndUpdate({_id: req.params.id}, {$pull:{usersLiked: req.auth.userId}, $inc:{likes:-1} })
-    //                     .then(() => res.status(200).json({ message: 'Like retiré'}))
-    //                     .catch(error => res.status(400).json({error }));  
-    //         }else{
-    //             return res.status(409).json({message: 'Il faut avoir liké pour revenir à 0'})
-    //         }
-    //     }
-    // })
-    // .catch(error => {
-    //     console.log(error)
-    //     return res.status(404).json({ error })
-    // });
-
-    // Post.findOne({ _id: req.params.id })
-    //     .then(Post => {
-    //         if (req.body.like === 1){
-    //             if(Post.usersLiked.includes(req.body.userId)){
-    //                 return res.status(409).json({ message: 'Vous avez déjà liké'})
-    //             }
-    //             if(!Post.usersLiked.includes(req.body.userId))
-    //                 Post.updateOne({ _id: req.params.id }, {$inc: {likes:1}, $push: {usersLiked: req.body.userId}})
-    //                     .then(() => res.status(200).json({ message: 'Like ajouté'}))
-    //                     .catch(error => res.status(400).json({ error }));
-    //             }
-    //         if (req.body.like === 0){
-    //             if(Post.usersLiked.includes(req.body.userId)){
-    //                 Post.updateOne({ _id: req.params.id }, {$inc: {likes:-1}, $pull: {usersLiked: req.body.userId}})
-    //                     .then(() => res.status(200).json({ message: 'like retiré'}))
-    //                     .catch(error => res.status(400).json({ error }));
-    //             }
-    //             if(!Post.usersLiked.includes(req.body.userId)){
-    //                 return res.status(409).json({message: 'Il faut avoir liké pour revenir à 0'})
-    //             }
-    //         }
-    //     })
-        // .catch(error => res.status(404).json({ error }));

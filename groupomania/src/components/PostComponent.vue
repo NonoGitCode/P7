@@ -6,8 +6,10 @@
         <p class="description"> {{ this.correctOrder.description }} </p>
         <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
         <div class= "postFooter"> 
-            <a class="NumberLikes"> {{ this.correctOrder.likes }} </a>
-           
+            <div>
+                <a class="NumberLikes"> {{ this.correctOrder.likes }} </a>
+                <i class="fa-solid fa-thumbs-up icon"  id="iconLike"/>
+            </div>
             <router-link :to="{name: 'post', params: { id: this.correctOrder._id } }" class="link">Aller au poste</router-link>
         </div>
     </div>

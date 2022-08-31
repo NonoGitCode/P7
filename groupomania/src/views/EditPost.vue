@@ -73,7 +73,9 @@ export default {
             this.fileadded = false
         },
         async modifyPost(){
-            if(this.$store.state.user.level >= 1 || this.$store.state.userId == this.post.userId){
+            let user = localStorage.getItem('user');
+            user = JSON.parse(user)
+            if(this.$store.state.user.level >= 1 || user.userId == this.post.userId){
                 if (this.postDescription != ""){
                     if(this.$store.state.postInfo){
                         let formData = new FormData ();
@@ -118,8 +120,9 @@ export default {
             }
         },
     },
-    async beforeDestroy(){
-        await this.$store.commit("updatePostDescription", null)
+    beforeDestroy(){
+        this.$store.commit("updatePostDescription", null)
+        this.$store.commit("grantAdmin", false)
     }
 };  
 

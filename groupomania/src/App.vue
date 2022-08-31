@@ -138,5 +138,19 @@ textarea{
   font-size: 12px;
   color: #0c42cb;
 }
+.icon{
+  margin-left: 5px;
+  font-size: 18px;
+}
+.icon:hover{
+  cursor: pointer;
+}
+#iconLike{
+  color: #0c42cb;
+}
+.numberOfLikes{
+  margin-top: 15px;
+}
+
 </style>
 

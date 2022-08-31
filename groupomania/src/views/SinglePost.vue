@@ -8,11 +8,11 @@
             <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
             <div class= "postFooter"> 
                 <a class="numberOfLikes"> {{ this.post.likes }} </a>
-                <button v-if="statusLiked == 'Liked'"  @click="likePost" class="btn liked">Liker</button>
-                <button v-if="statusLiked != 'Liked'" @click="likePost" class="btn" >Liker</button>
+                <i class="fa-solid fa-thumbs-up icon"  id="iconLike" v-if="statusLiked == 'Liked'"  @click="likePost"/>
+                <i class="fa-regular fa-thumbs-up icon" id="iconNotLiked" v-if="statusLiked != 'Liked'" @click="likePost"/>
 
-                <button class="btn" @click="editPost" :class="{'button--disabled' : !checkAdmin}">Modifier</button>
-                <button class="btn" @click="deletePost" :class="{'button--disabled' : !checkAdmin}" >Supprimer</button>
+                <button v-if="this.$store.state.isAdmin == true" class="btn" @click="editPost" :class="{'button--disabled' : !checkAdmin}">Modifier</button>
+                <button v-if="this.$store.state.isAdmin == true" class="btn" @click="deletePost" :class="{'button--disabled' : !checkAdmin}" >Supprimer</button>
             </div> 
         </div>
     </div>
@@ -38,14 +38,19 @@ export default {
             this.$router.push('/login')
             return;
         }
+        
     },
     async mounted(){
+        this.$store.commit("grantAdmin", null)
         const id = new URL(window.location.href).href
         let currentId = id.substr(29,200)
         await this.$store.dispatch('getOnePost', currentId)
         this.post = this.$store.state.currentPost
         if(this.post.usersLiked.includes(this.$store.state.user.userId)){
             await this.$store.commit("setStatusLike", "Liked")
+        };
+        if(this.post.userId == this.$store.state.user.userId || this.$store.state.user.level >= 1){
+            this.$store.commit("grantAdmin", true)
         }
     },
     computed: {
@@ -131,20 +136,8 @@ export default {
     justify-content: space-around;
     align-items: baseline;
 }
-.numberOfLikes{
-    margin-top: 15px;
-}
-.liked{
-    background-color: aqua;
-}
-.liked:hover{
-    background-color: aqua;
-}
-.liked{
-    background-color: aqua;
-}
-.liked:hover{
-    background-color: aqua;
-}
+
+
+
 
 </style>
