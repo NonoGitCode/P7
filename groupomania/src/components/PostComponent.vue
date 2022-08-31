@@ -1,13 +1,14 @@
 <template>
     <div class="container">
     <!-- <div class="container" v-if="currentBlog"> -->
-        <p class="pseudo"> {{ this.post.pseudo }} </p>
-            <img :src="this.post.imageUrl"  class="ImgPost"/>
-        <p class="description"> {{ this.post.description }} </p>
+        <p class="pseudo"> {{ this.correctOrder.pseudo }} </p>
+            <img :src="this.correctOrder.imageUrl"  class="ImgPost"/>
+        <p class="description"> {{ this.correctOrder.description }} </p>
         <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
         <div class= "postFooter"> 
-            <a class="NumberLikes"> {{ this.post.numberOfLikes }} </a>
-            <router-link :to="{name: 'post', params: { id: this.post._id } }" class="link">Aller au poste</router-link>
+            <a class="NumberLikes"> {{ this.correctOrder.likes }} </a>
+           
+            <router-link :to="{name: 'post', params: { id: this.correctOrder._id } }" class="link">Aller au poste</router-link>
         </div>
     </div>
 </template>
@@ -17,9 +18,10 @@
 
 export default {
     name: 'post',
-    props: ["post"],
+    props: ["correctOrder"],
     data(){
         return {
+            
         }
     },
     // components: { 

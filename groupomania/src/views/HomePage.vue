@@ -3,7 +3,7 @@
     <HeaderConnected/>
     <div class="body">
         <h1>Posts récents</h1>
-       <PostComponent :post="post" v-for="(post, index) in post" :key="index" />
+       <PostComponent :correctOrder="correctOrder" v-for="(correctOrder, index) in correctOrder" :key="index" />
     </div>
 </div>
 </template>
@@ -19,6 +19,7 @@ export default {
     data(){
         return{
             post: [],
+            correctOrder: [],
         }
     },
     mounted(){
@@ -30,7 +31,10 @@ export default {
     async mounted(){
         await this.$store.dispatch('getAllPosts')
         this.post = this.$store.state.allPosts
-        console.log(this.post)
+        let myArray = this.post
+        this.correctOrder = myArray.sort(function(a,b){
+            return b.updateTime - a.updateTime
+        })
     },
     computed: {
         

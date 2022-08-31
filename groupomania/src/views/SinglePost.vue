@@ -2,18 +2,15 @@
     <div class="body">
         <HeaderConnected />
         <div class="container" >
-        <!-- <div class="container" v-if="currentBlog"> -->
             <p class="pseudo"> {{ this.post.pseudo }} </p>
-            <!-- <p class="pseudo"> {{ this.currentPost[0].postPseudo }} </p> -->
                 <img :src="this.post.imageUrl"  class="ImgPost"/>
-                <!-- <img :src= this.currentPost[0].postCoverPhoto  class="ImgPost"/> -->
-            <p class="description"> {{ this.post.description }} </p>
-            <!-- <p class="description"> {{ this.currentPost[0].description }}</p>  -->
-            
+            <p class="description"> {{ this.post.description }} </p>    
             <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
             <div class= "postFooter"> 
-                <a class="numberOfLikes"> {{ this.post.numberOfLikes }} </a>
-                <!-- <a class="numberOfLikes"> {{ this.currentPost[0].numberOfLikes }} </a> -->
+                <a class="numberOfLikes"> {{ this.post.likes }} </a>
+                <button v-if="statusLiked == 'Liked'"  @click="likePost" class="btn liked">Liker</button>
+                <button v-if="statusLiked != 'Liked'" @click="likePost" class="btn" >Liker</button>
+
                 <button class="btn" @click="editPost" :class="{'button--disabled' : !checkAdmin}">Modifier</button>
                 <button class="btn" @click="deletePost" :class="{'button--disabled' : !checkAdmin}" >Supprimer</button>
             </div> 
@@ -47,17 +44,72 @@ export default {
         let currentId = id.substr(29,200)
         await this.$store.dispatch('getOnePost', currentId)
         this.post = this.$store.state.currentPost
-        console.log(this.post)
-        console.log(this.$store.state.user.userId)
+        if(this.post.usersLiked.includes(this.$store.state.user.userId)){
+            await this.$store.commit("setStatusLike", "Liked")
+        }
     },
     computed: {
-       async checkAdmin(){
+       
+        postCoverPhoto(){
+            return this.$store.state.postPhotoFileURL;
+        },
+        beforeDestroy(){
+            this.$store.commit("grantAdmin", null)
+        },
+        ...mapState(['statusLiked'])
+    },
+    methods:{
+        editPost(){
+            let currendUserId = this.$store.state.user.userId;
+            let currendPostUserID = this.$store.state.currentPost.userId;
+            let currentLevelUser = this.$store.state.user.level
+            if(currendUserId == currendPostUserID || currentLevelUser >= 1){
+                this.$router.push(`edit/${this.$store.state.currentPost._id}`)
+            }
+        },
+        async deletePost(){
+            let currendUserId = this.$store.state.user.userId;
+            let currendPostUserID = this.$store.state.currentPost.userId;
+            let currentLevelUser = this.$store.state.user.level
+            if(currendUserId == currendPostUserID || currentLevelUser >= 1){
+                await this.$store.dispatch('deletePost', this.$store.state.currentPost._id)
+                this.$router.push("/")
+            }
+        },
+        async likePost(){
+            if(this.$store.state.currentPost.usersLiked.includes(this.$store.state.user.userId)){
+                let formData = {
+                    like: 0,
+                    id: this.post._id
+                }
+                await this.$store.dispatch("setLike", formData)
+                await this.$store.dispatch("getOnePost",this.post._id)
+                this.post.likes = this.$store.state.currentPost.likes
+                this.$store.commit("setStatusLike", "")
+
+
+            }else{
+                let formData = {
+                    like: 1,
+                    id: this.post._id
+                }
+                await this.$store.dispatch("setLike", formData)
+                await this.$store.dispatch("getOnePost",this.post._id)
+                this.post.likes = this.$store.state.currentPost.likes
+                this.$store.commit("setStatusLike", "Liked")
+
+            }
+        },
+        checkAdmin(){
             const user = localStorage.getItem('user')
             if(user === null){
                 this.$router.push('/login')
             } else {
                 let userInfo = JSON.parse(user)
                 let currendPostUserID = this.post.userId
+                console.log(userInfo.level)
+                console.log(userInfo.userId)
+                console.log(currendPostUserID)
                 if (userInfo.level >= 1 || userInfo.userId == currendPostUserID){
                     this.$store.commit('grantAdmin', true)
                     return true
@@ -67,54 +119,12 @@ export default {
                 }
             }
         },
-        postCoverPhoto(){
-            return this.$store.state.postPhotoFileURL;
-        },
-        beforeDestroy(){
-            this.$store.commit("grantAdmin", null)
-        },
-        // async getOnePost(){
-        //     const self = this;
-        //     await this.$store.dispatch('getOnePost',postID)
-        //     .then((response) => {
-        //         self.$router.push("{name: 'post', params: { postid: this.post.postID } }")
-        //         console.log(reponse)
-        //     }).catch((error) => {
-        //         console.log(error)
-        //     })
-        //     return;
-        //     //Revoir les params
-        // },
-        ...mapState(['status'])
-    },
-    methods:{
-        editPost(){
-            let currendUserId = this.$store.state.user.userId;
-            let currendPostUserID = this.$store.state.currentPost.userId;
-            let currentLevelUser = this.$store.state.user.level
-            if(currendUserId == currendPostUserID || currentLevelUser >= 1){
-                console.log(this.$store.state.currentId)
-                this.$router.push(`edit/${this.$store.state.currentPost._id}`)
-            }
-        },
-        // async deletePost(){
-        //     if(this.$store.state.isAdmin == true){
-        //         const self = this;
-        //         await this.$store.dispatch('deleteOnePost')
-        //        .then((response)=> {
-        //             self.$router.push('/')
-        //             console.log(response)
-        //        }).catch((error) => {
-        //             console.log(error)
-        //        })
-        //     };
-        // },
         
+    },
 
-    }
 }   
-
 </script>
+
 <style scoped>
 .postFooter{
     display: flex;
@@ -123,6 +133,18 @@ export default {
 }
 .numberOfLikes{
     margin-top: 15px;
+}
+.liked{
+    background-color: aqua;
+}
+.liked:hover{
+    background-color: aqua;
+}
+.liked{
+    background-color: aqua;
+}
+.liked:hover{
+    background-color: aqua;
 }
 
 </style>

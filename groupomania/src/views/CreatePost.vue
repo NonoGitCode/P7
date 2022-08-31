@@ -29,6 +29,7 @@ export default {
             this.$router.push('/login')
             return;
         };
+
     },
     computed:{
         validatedFields() {
@@ -40,7 +41,7 @@ export default {
         },
         postDescription: {
             get() {
-                return this.$store.state.postDescription
+                return 
             },
             set(payload) {
                 this.$store.commit("updatePostDescription", payload);
@@ -93,6 +94,7 @@ export default {
             }
         },
     },
+    
 };  
 
 </script>

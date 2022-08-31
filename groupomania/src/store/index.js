@@ -30,6 +30,7 @@ if (!user){
 export default createStore({
   state: {
     status:'',
+    statusLiked: '',
     user:user,
     isAdmin: null,
     postLoaded: null,
@@ -62,6 +63,21 @@ export default createStore({
         level: 0
       },
       localStorage.removeItem('user');
+      state.status = '',
+      state.statusLiked = '',
+      state.isAdmin = null,
+      state.postLoaded = null,
+      state.allPosts = [],
+      state.postDescription = "",
+      state.postPseudo =  null,
+      state.postPhotoName = "",
+      state.postPhotoFileURL =  null,
+      state.currentPost = null,
+      state.postCoverPhoto = null,
+      state.postLoaded = null,
+      state.PostInfo = null,
+      state.currentId = null
+
     },
     grantAdmin(state, value){
       state.isAdmin = value
@@ -95,6 +111,9 @@ export default createStore({
     },
     setCurrentId(state, payload){
       state.currentId = payload
+    },
+    setStatusLike(state,payload){
+      state.statusLiked = payload
     }
   },
   actions: {
@@ -144,7 +163,6 @@ export default createStore({
         .then(function(response){
           let myObj = response.data
           commit('importAllPosts', myObj)
-          // commit('statutPostLoaded', true);
           resolve(response);
         })
         .catch(function(error){
@@ -166,9 +184,10 @@ export default createStore({
       })
       })
     },
-    deleteOnePost({commit}, id){
+    deletePost({commit}, id){
       return new Promise ((resolve, reject) =>{
-        UrlApi.delete("/post/id")
+        let currentUrl = `post/${id}`
+        UrlApi.delete(`${currentUrl}`)
         .then(function(response){
           commit('resetCurrentPost')
           resolve(response);
@@ -178,7 +197,7 @@ export default createStore({
         })
       })
     },
-    modifyPost: ({commit}, formData, currentId) => {
+    modifyPost: ({commit}, formData) => {
       commit;
       console.log(formData)
       return new Promise((resolve, reject) => {
@@ -191,6 +210,21 @@ export default createStore({
           reject(error);
         })
       });
+    },
+    setLike({commit},payload){
+      commit;
+      console.log(payload)
+      return new Promise((resolve,reject) =>{
+        let currentUrl = `/post/${payload.id}/like`;
+        console.log(currentUrl)
+        UrlApi.post(`${currentUrl}`, payload)
+        .then(function(response){
+          resolve(response);
+        })
+        .catch(function(error){
+          reject(error);
+        })
+      })
     }
   },
 });

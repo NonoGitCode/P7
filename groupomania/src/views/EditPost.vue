@@ -34,18 +34,12 @@ export default {
             this.$router.push('/login')
             return;
         }
-        console.log(this.currentPost)
-        this.postDescription = this.post.description
-        console.log(this.post.description)
     },
     async mounted(){
         const id = new URL(window.location.href).href
         let currentId = id.substr(34,200)
-        console.log(currentId)
         await this.$store.dispatch('getOnePost', currentId)
         this.post = this.$store.state.currentPost
-        console.log(this.post)
-        console.log(this.$store.state.user.userId)
         this.postDescription = this.post.description
     },
     computed:{
@@ -59,14 +53,6 @@ export default {
                 return false
             };
         },
-        
-        // checkFile(){
-        //     if (this.$refs.postPhoto.files[0] === undefined){
-        //        return true 
-        //     } else {
-        //         return false
-        //     }
-        // }
         postDescription: {
             get() {
                 return this.$store.state.postDescription
@@ -84,24 +70,22 @@ export default {
             this.$store.commit("createFileURL", URL.createObjectURL(this.file));
             this.$store.commit('fileInfo', this.file)
             console.log(this.$store.state.PostInfo)
-            return this.fileadded = false
+            this.fileadded = false
         },
         async modifyPost(){
             if(this.$store.state.user.level >= 1 || this.$store.state.userId == this.post.userId){
                 if (this.postDescription != ""){
-                    console.log(this.$store.state.PostInfo)
-                    if(this.$store.state.postInfo != null){
-                        console.log(this.$store.state.postInfo)
-                        console.log("salut")
+                    if(this.$store.state.postInfo){
                         let formData = new FormData ();
                         const id = new URL(window.location.href).href
                         let currentId = id.substr(34,200)
-                        console.log(this.$store.state.postDescription, this.$store.state.postInfo )
+
                         formData.append('image', this.$store.state.postInfo);
                         formData.append('Post', JSON.stringify({
                             description: this.$store.state.postDescription,
                             pseudo: this.$store.state.user.pseudo,
                         }))
+
                         await this.$store.dispatch('modifyPost', formData, currentId)
                         .then((response) =>{
                                 console.log(response)
@@ -112,11 +96,8 @@ export default {
                         this.$router.push("/")
                         return;
                     } else {
-
                         const id = new URL(window.location.href).href
                         let currentId = id.substr(34,200)
-                        console.log(this.$store.state.postDescription)
-                        console.log(this.$store.state.user.pseudo)
                         let formData = {
                             description: this.$store.state.postDescription,
                             pseudo: this.$store.state.user.pseudo,
@@ -137,8 +118,8 @@ export default {
             }
         },
     },
-    beforeDestroy(){
-        this.$store.commit("updatePostDescription", null)
+    async beforeDestroy(){
+        await this.$store.commit("updatePostDescription", null)
     }
 };  
 
