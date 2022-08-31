@@ -1,7 +1,10 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const security = require('../security/security');
+
+require('dotenv').config();
+let secretToken = process.env.token
+
 
 //Fonction sigup pour créer un nouveau User et hasher le password 10 fois avec bcrypt
 exports.signup = (req, res, next) => {
@@ -39,7 +42,7 @@ exports.login = (req, res, next) => {
                         level: user.level,
                         token: jwt.sign(
                             { userId: user._id , level: user.level, pseudo: user.pseudo},
-                            security.secretToken,
+                            `${secretToken}`,
                             { expiresIn: '24h' }
                         )
                     });

@@ -1,11 +1,12 @@
 const jwt = require('jsonwebtoken');
-const security = require('../security/security')
+require('dotenv').config();
+let secretToken = process.env.token
 
 //Extraction des informations d'authentification, vérification, puis transmition.
 module.exports = (req, res, next) => {
     try {
         const token = req.headers.authorization.split(' ')[0];
-        const decodedToken = jwt.verify(token,security.secretToken);
+        const decodedToken = jwt.verify(token,`${secretToken}`);
         const userId = decodedToken.userId;
         const level = decodedToken.level
         const pseudo = decodedToken.pseudo

@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const path = require('path');
 const postsRoutes = require('./routes/posts');
 const userRoutes = require('./routes/user');
-const security = require('./security/security');
 const helmet = require('helmet');
-
+require('dotenv').config();
+let myUsername = process.env.myUsername
 
 //Connexion à à la base de donnée mongoDB
-mongoose.connect(security.username,
+mongoose.connect(`${myUsername}`,
 { useNewUrlParser: true,
   useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))

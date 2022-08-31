@@ -3,6 +3,7 @@ const http = require('http');
 const app = require('./app');
 
 
+
 //Fonctions qui permettent de selectionner le port d'utilisation de l'application backend
 const normalizePort = val => {
   const port = parseInt(val, 10);
