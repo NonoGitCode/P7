@@ -115,9 +115,6 @@ export default {
             } else {
                 let userInfo = JSON.parse(user)
                 let currendPostUserID = this.post.userId
-                console.log(userInfo.level)
-                console.log(userInfo.userId)
-                console.log(currendPostUserID)
                 if (userInfo.level >= 1 || userInfo.userId == currendPostUserID){
                     this.$store.commit('grantAdmin', true)
                     return true
