@@ -7,7 +7,7 @@
             <p class="description"> {{ this.post.description }} </p>    
             <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
             <div class= "postFooter"> 
-                <div class= "likes">
+                <div class="likes">
                     <a class="numberOfLikes"> {{ this.post.likes }} </a>
                     <i class="fa-solid fa-thumbs-up icon"  id="iconLike" v-if="statusLiked == 'Liked'"  @click="likePost"/>
                     <i class="fa-regular fa-thumbs-up icon" id="iconNotLiked" v-if="statusLiked != 'Liked'" @click="likePost"/>
@@ -60,8 +60,9 @@ export default {
         postCoverPhoto(){
             return this.$store.state.postPhotoFileURL;
         },
-        beforeDestroy(){
-            this.$store.commit("grantAdmin", null)
+        async beforeDestroy(){
+            await this.$store.commit("grantAdmin", null)
+            await this.$store.commit("setStatusLike", null)
         },
         ...mapState(['statusLiked'])
     },
@@ -114,6 +115,9 @@ export default {
             } else {
                 let userInfo = JSON.parse(user)
                 let currendPostUserID = this.post.userId
+                console.log(userInfo.level)
+                console.log(userInfo.userId)
+                console.log(currendPostUserID)
                 if (userInfo.level >= 1 || userInfo.userId == currendPostUserID){
                     this.$store.commit('grantAdmin', true)
                     return true
@@ -136,9 +140,8 @@ export default {
     align-items: baseline;
 }
 .likes{
-    margin-top: 15px;
+    margin-top: 18px;
 }
-
 
 
 
