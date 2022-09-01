@@ -69,7 +69,6 @@ export default {
             this.$store.commit("fileNameChange", fileName);
             this.$store.commit("createFileURL", URL.createObjectURL(this.file));
             this.$store.commit('fileInfo', this.file)
-            console.log(this.$store.state.PostInfo)
             this.fileadded = false
         },
         async modifyPost(){
@@ -77,18 +76,20 @@ export default {
             user = JSON.parse(user)
             if(this.$store.state.user.level >= 1 || user.userId == this.post.userId){
                 if (this.postDescription != ""){
-                    if(this.$store.state.postInfo){
-                        let formData = new FormData ();
+                    if(this.$store.state.postInfo != ""){
+                        let formData = new FormData();
+                    formData.append('image', this.$store.state.PostInfo);
+                    formData.append('Post', JSON.stringify({
+                        description: this.$store.state.postDescription,
+                        pseudo: this.$store.state.user.pseudo,
+                    }))
                         const id = new URL(window.location.href).href
                         let currentId = id.substr(34,200)
-
-                        formData.append('image', this.$store.state.postInfo);
-                        formData.append('Post', JSON.stringify({
-                            description: this.$store.state.postDescription,
-                            pseudo: this.$store.state.user.pseudo,
-                        }))
-
-                        await this.$store.dispatch('modifyPost', formData, currentId)
+                        let data = {
+                            data: formData,
+                            id: currentId
+                        }
+                        await this.$store.dispatch('modifyPost', data)
                         .then((response) =>{
                                 console.log(response)
                         }).catch((error)=>{

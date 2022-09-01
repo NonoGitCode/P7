@@ -141,6 +141,7 @@ textarea{
 .icon{
   margin-left: 5px;
   font-size: 18px;
+  opacity: 0.7;
 }
 .icon:hover{
   cursor: pointer;

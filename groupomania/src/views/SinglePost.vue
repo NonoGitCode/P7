@@ -7,9 +7,11 @@
             <p class="description"> {{ this.post.description }} </p>    
             <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
             <div class= "postFooter"> 
-                <a class="numberOfLikes"> {{ this.post.likes }} </a>
-                <i class="fa-solid fa-thumbs-up icon"  id="iconLike" v-if="statusLiked == 'Liked'"  @click="likePost"/>
-                <i class="fa-regular fa-thumbs-up icon" id="iconNotLiked" v-if="statusLiked != 'Liked'" @click="likePost"/>
+                <div class= "likes">
+                    <a class="numberOfLikes"> {{ this.post.likes }} </a>
+                    <i class="fa-solid fa-thumbs-up icon"  id="iconLike" v-if="statusLiked == 'Liked'"  @click="likePost"/>
+                    <i class="fa-regular fa-thumbs-up icon" id="iconNotLiked" v-if="statusLiked != 'Liked'" @click="likePost"/>
+                </div>
 
                 <button v-if="this.$store.state.isAdmin == true" class="btn" @click="editPost" :class="{'button--disabled' : !checkAdmin}">Modifier</button>
                 <button v-if="this.$store.state.isAdmin == true" class="btn" @click="deletePost" :class="{'button--disabled' : !checkAdmin}" >Supprimer</button>
@@ -112,9 +114,6 @@ export default {
             } else {
                 let userInfo = JSON.parse(user)
                 let currendPostUserID = this.post.userId
-                console.log(userInfo.level)
-                console.log(userInfo.userId)
-                console.log(currendPostUserID)
                 if (userInfo.level >= 1 || userInfo.userId == currendPostUserID){
                     this.$store.commit('grantAdmin', true)
                     return true
@@ -135,6 +134,9 @@ export default {
     display: flex;
     justify-content: space-around;
     align-items: baseline;
+}
+.likes{
+    margin-top: 15px;
 }
 
 

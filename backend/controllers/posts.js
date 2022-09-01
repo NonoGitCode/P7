@@ -37,19 +37,19 @@ exports.createPost = (req, res, next) => {
 
 
 //Fonction modify Post qui récupère les informations transmises dans le body et qui met à jour ce qui a été modifié (après avoir vérifié si l'utilisateur est bien le créateur de l'objet Post en premier lieu)
-exports.modifyPost = (req, res, next) => { 
+exports.modifyPost = (req, res, next) => {
     if(req.file != null){
-        const PostObject = req.file ? {
+        const PostObject = {
             ...JSON.parse(req.body.Post),
             imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
             updateTime: Date.now()
-        } : { ...req.body };
+        }
         if(req.auth.level >= 1){
-            Post.findOneAndUpdate({_id: req.params.id}, ...PostObject)
+            Post.findOneAndUpdate({_id: req.params.id}, PostObject)
             .then(() => res.status(200).json({ message: 'Post modififée 4 !'}))
             .catch((error)=> res.status(400).json({ error }));
         }else{
-            Post.findOneAndUpdate({_id:req.params.id, userId:req.auth.userId}, ...PostObject)
+            Post.findOneAndUpdate({_id:req.params.id, userId:req.auth.userId}, PostObject)
             .then(() => res.status(200).json({ message: 'Post modififée 3 !'}))
             .catch((error)=> res.status(400).json({ error }));
         }

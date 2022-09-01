@@ -197,12 +197,11 @@ export default createStore({
         })
       })
     },
-    modifyPost: ({commit}, formData) => {
+    modifyPost: ({commit}, payload) => {
       commit;
-      console.log(formData)
       return new Promise((resolve, reject) => {
-        let currentUrl = `/post/${formData.currentId}`
-        UrlApi.put(`${currentUrl}`, formData)
+        let currentUrl = `/post/${payload.id}`
+        UrlApi.put(`${currentUrl}`, payload.data)
         .then(function(response){
           resolve(response);
         })
@@ -213,10 +212,8 @@ export default createStore({
     },
     setLike({commit},payload){
       commit;
-      console.log(payload)
       return new Promise((resolve,reject) =>{
         let currentUrl = `/post/${payload.id}/like`;
-        console.log(currentUrl)
         UrlApi.post(`${currentUrl}`, payload)
         .then(function(response){
           resolve(response);
