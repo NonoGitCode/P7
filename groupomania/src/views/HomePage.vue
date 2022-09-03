@@ -40,6 +40,9 @@ export default {
         
         ...mapState(['status'])
     },
+    async beforeDestroy(){
+        await this.$store.commit("setStatusLike", null)
+    },
     components: { HeaderConnected, PostComponent },
 }
 </script>
