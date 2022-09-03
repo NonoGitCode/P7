@@ -124,7 +124,9 @@ export default {
     beforeDestroy(){
         this.$store.commit("updatePostDescription", null)
         this.$store.commit("grantAdmin", false)
-    }
+        this.$store.commit("setStatusLike", null)
+    },
+    
 };  
 
 </script>
