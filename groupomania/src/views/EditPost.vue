@@ -125,6 +125,7 @@ export default {
         this.$store.commit("updatePostDescription", null)
         this.$store.commit("grantAdmin", false)
         this.$store.commit("setStatusLike", null)
+        this.$store.commit("fileNameChange",null)
     },
     
 };  

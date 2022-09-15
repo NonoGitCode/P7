@@ -16,19 +16,10 @@
 </template>
 
 <script>
-// import likeIcon from "../assets/like-svgrepo-com.svg";
 
 export default {
     name: 'post',
     props: ["correctOrder"],
-    data(){
-        return {
-            
-        }
-    },
-    // components: { 
-    //     likeIcon 
-    // }
 }
 </script>
 

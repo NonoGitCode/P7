@@ -29,6 +29,7 @@ export default {
             this.$router.push('/login')
             return;
         };
+        this.$store.commit("fileNameChange","")
 
     },
     computed:{

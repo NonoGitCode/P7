@@ -4,11 +4,11 @@ const path = require('path');
 const postsRoutes = require('./routes/posts');
 const userRoutes = require('./routes/user');
 const helmet = require('helmet');
-// require('dotenv').config();
-// let myUsername = process.env.myUsername
+require('dotenv').config();
+let myUsername = process.env.myUsername
 
 //Connexion à à la base de donnée mongoDB
-mongoose.connect(`mongodb+srv://admingroupomania:M1kdz2m6EteVg2qC@cluster0.zov8g.mongodb.net/Groupomania?retryWrites=true&w=majority`,
+mongoose.connect(`${myUsername}`,
 { useNewUrlParser: true,
   useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))

@@ -5,7 +5,6 @@
             <p class="pseudo"> {{ this.post.pseudo }} </p>
                 <img :src="this.post.imageUrl"  class="ImgPost"/>
             <p class="description"> {{ this.post.description }} </p>    
-            <!-- <a><font-awesome-icons icon ="faThumbsUp"/></a> -->
             <div class= "postFooter"> 
                 <div class="likes">
                     <a class="numberOfLikes"> {{ this.post.likes }} </a>

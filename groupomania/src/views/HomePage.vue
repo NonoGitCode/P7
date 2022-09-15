@@ -46,7 +46,3 @@ export default {
     components: { HeaderConnected, PostComponent },
 }
 </script>
-
-<style scoped>
-
-</style>
